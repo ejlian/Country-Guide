@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Country Guide Web
 
-## Getting Started
+Country Guide is a Next.js 14 App Router experience for discovering countries, drilling into weather and currency data, and curating a personalised list of favourites. It combines REST Countries, OpenWeather, and Open Exchange Rate APIs with a modern UI powered by Tailwind CSS and shadcn/ui.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🌍 **Explore**: Filter countries by name or region with instant feedback powered by React Query.
+- 🏳️ **Detail pages**: Rich snapshots with flags, key facts, neighbour listings, live weather, and currency highlights.
+- 📌 **Saved collection**: Persist favourites locally using Zustand with storage middleware.
+- 👤 **Profile**: Centralised hub for upcoming sync features and provider references.
+- 🎨 **Design system**: Tailored shadcn/ui components, responsive layout, and dark-mode friendly palette.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+	```powershell
+	npm install
+	```
 
-## Learn More
+2. **Configure environment variables**
 
-To learn more about Next.js, take a look at the following resources:
+	Copy `.env.example` to `.env.local` and add your OpenWeather key (optional but recommended):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+	```powershell
+	Copy-Item .env.example .env.local
+	# then edit .env.local to set OPENWEATHER_API_KEY
+	```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Run the development server**
 
-## Deploy on Vercel
+	```powershell
+	npm run dev
+	```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+	Visit [http://localhost:3000](http://localhost:3000) to explore the app. Saved countries persist per browser via local storage.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+| Command         | Description                               |
+|-----------------|-------------------------------------------|
+| `npm run dev`   | Start the development server (Turbopack). |
+| `npm run build` | Create an optimised production build.     |
+| `npm run start` | Serve the production build.               |
+| `npm run lint`  | Run ESLint over the project.              |
+
+## Data sources
+
+- [REST Countries](https://restcountries.com) – core country metadata.
+- [OpenWeather](https://openweathermap.org/api) – capital city weather snapshots (requires API key).
+- [ExchangeRate-API](https://www.exchangerate-api.com/) – live currency conversion rates.
+
+## Folder highlights
+
+- `app/` – App Router routes (`page.tsx`, dynamic country details, saved/profile). 
+- `components/` – shadcn/ui primitives, navigation, and country UI building blocks.
+- `lib/api/` – lightweight wrappers around third-party APIs with caching hints.
+- `store/` – Zustand store for saved countries.
+- `types/` – shared TypeScript contracts.
+
+## Next steps
+
+- Wire up authentication and cross-device sync for saved countries.
+- Expand analytics (GDP, HDI, sustainability metrics) with additional providers.
+- Add automated integration tests covering fetch flows and store persistence.

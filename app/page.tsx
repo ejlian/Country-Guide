@@ -1,103 +1,125 @@
-import Image from "next/image";
+"use client";
+
+import { useMemo, useState } from "react";
+import { AlertTriangle, Loader2 } from "lucide-react";
+
+import { CountryCard } from "@/components/country/country-card";
+import {
+  CountryFilters,
+  type RegionFilter,
+} from "@/components/country/country-filters";
+import { useCountrySearch } from "@/hooks/use-country-search";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [search, setSearch] = useState("");
+  const [region, setRegion] = useState<RegionFilter>("all");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const { countries, isLoading, isFetching, error } = useCountrySearch({
+    search,
+    region,
+  });
+
+  const headline = useMemo(() => {
+    if (search) {
+      return `Results for "${search}"`;
+    }
+    if (region !== "all") {
+      return `${region.charAt(0).toUpperCase()}${region.slice(1)} spotlight`;
+    }
+    return "Global snapshot";
+  }, [search, region]);
+
+  return (
+    <section className="space-y-10">
+      <header className="space-y-4">
+        <div className="flex flex-col gap-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            Explore the world
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Find countries, compare stats, and curate your travel wishlist.
+          </h1>
+          <p className="max-w-2xl text-base text-muted-foreground">
+            Search by name or focus on a specific region. Save favorites to revisit later and dive into detailed
+            insights including weather and currency trends.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <CountryFilters
+          search={search}
+          region={region}
+          onSearchChange={setSearch}
+          onRegionChange={setRegion}
+        />
+      </header>
+
+      <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
+        <div className="font-medium text-foreground">{headline}</div>
+        <div>{countries.length.toLocaleString()} countries</div>
+      </div>
+
+      <Separator />
+
+      {error ? (
+        <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-destructive/40 bg-destructive/10 p-10 text-destructive">
+          <AlertTriangle className="h-8 w-8" />
+          <div className="text-center">
+            <p className="font-semibold">We couldn’t load countries right now.</p>
+            <p className="text-sm text-destructive/80">
+              {error.message || "Please try again in a moment."}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {(isLoading || isFetching) && (
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Fetching the latest country data…
+            </div>
+          )}
+          {isLoading ? (
+            <CountryGridSkeleton />
+          ) : countries.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-10 text-center text-muted-foreground">
+              <p className="text-lg font-semibold">No countries found</p>
+              <p className="max-w-md text-sm">
+                Try adjusting your search or region filter. The REST Countries API occasionally rate limits queries—if that
+                happens, wait a few seconds and refresh.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {countries.map((country) => (
+                <CountryCard key={country.code} country={country} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function CountryGridSkeleton() {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div key={index} className="space-y-3 rounded-lg border border-border/40 p-4">
+          <Skeleton className="h-20 w-full rounded-md" />
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-3 w-full" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-6 w-14" />
+          </div>
+          <Skeleton className="h-9 w-full" />
+        </div>
+      ))}
     </div>
   );
 }
