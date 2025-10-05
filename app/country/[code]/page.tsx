@@ -70,6 +70,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             fill
             className="object-cover"
             sizes="(max-width: 768px) 60vw, 200px"
+            unoptimized
           />
         </div>
         <div className="flex-1 space-y-4">

@@ -50,6 +50,7 @@ export function CountryCard({ country }: CountryCardProps) {
             fill
             sizes="(max-width: 768px) 50vw, 200px"
             className="object-cover"
+            unoptimized
           />
         </div>
         <div className="space-y-2">
