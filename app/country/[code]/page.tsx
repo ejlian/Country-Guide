@@ -61,45 +61,14 @@ export default async function CountryPage({ params }: CountryPageProps) {
   ]);
 
   return (
-    <article className="space-y-10">
-      <header className="flex flex-col gap-6 rounded-xl border bg-card p-6 shadow-sm md:flex-row md:items-center md:gap-10">
-        <div className="relative h-28 w-44 flex-shrink-0 overflow-hidden rounded-lg border bg-muted">
-          <Image
-            src={country.flagPng}
-            alt={country.flagAlt ?? `${country.name} flag`}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 60vw, 200px"
-          />
-        </div>
-        <div className="flex-1 space-y-4">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              {country.name}
-            </h1>
-            <p className="text-base text-muted-foreground">{country.officialName}</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="border-border/60">
-              <Globe2 className="mr-1 h-3.5 w-3.5" aria-hidden /> {country.region}
-            </Badge>
-            {country.subregion && (
-              <Badge variant="outline">{country.subregion}</Badge>
-            )}
-            {country.independent !== undefined && (
-              <Badge variant={country.independent ? "default" : "outline"}>
-                {country.independent ? "Independent" : "Territory"}
-              </Badge>
-            )}
-            {country.capital && (
-              <Badge variant="outline" className="border-dashed">
-                <MapPin className="mr-1 h-3.5 w-3.5" aria-hidden /> {country.capital}
-              </Badge>
-            )}
-          </div>
-          <CountryActions country={country} />
-        </div>
-      </header>
+    <article className="space-y-12">
+      {/* Hero Header */}
+      <section className="space-y-6">
+        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+          Discover the Wonders of {country.name}
+        </h1>
+        <CountryActions country={country} />
+      </section>
 
       <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <Card>

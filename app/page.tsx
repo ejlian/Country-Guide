@@ -28,77 +28,78 @@ export default function Home() {
     if (region !== "all") {
       return `${region.charAt(0).toUpperCase()}${region.slice(1)} spotlight`;
     }
-    return "Global snapshot";
+    return "Popular Destinations";
   }, [search, region]);
 
   return (
-    <section className="space-y-10">
-      <header className="space-y-4">
-        <div className="flex flex-col gap-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            Explore the world
-          </p>
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            Find countries, compare stats, and curate your travel wishlist.
-          </h1>
-          <p className="max-w-2xl text-base text-muted-foreground">
-            Search by name or focus on a specific region. Save favorites to revisit later and dive into detailed
-            insights including weather and currency trends.
-          </p>
+    <div className="space-y-16">
+      {/* Hero Section */}
+      <section className="flex flex-col items-center justify-center space-y-6 py-12 text-center">
+        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl">
+          Find Your Next Adventure
+        </h1>
+        <p className="max-w-2xl text-lg text-muted-foreground">
+          Explore countries, discover hidden gems, and plan the trip of a lifetime.
+        </p>
+        <div className="w-full max-w-2xl">
+          <CountryFilters
+            search={search}
+            region={region}
+            onSearchChange={setSearch}
+            onRegionChange={setRegion}
+          />
         </div>
-        <CountryFilters
-          search={search}
-          region={region}
-          onSearchChange={setSearch}
-          onRegionChange={setRegion}
-        />
-      </header>
+      </section>
 
-      <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
-        <div className="font-medium text-foreground">{headline}</div>
-        <div>{countries.length.toLocaleString()} countries</div>
-      </div>
-
-      <Separator />
-
-      {error ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-destructive/40 bg-destructive/10 p-10 text-destructive">
-          <AlertTriangle className="h-8 w-8" />
-          <div className="text-center">
-            <p className="font-semibold">We couldn’t load countries right now.</p>
-            <p className="text-sm text-destructive/80">
-              {error.message || "Please try again in a moment."}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {(isLoading || isFetching) && (
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Fetching the latest country data…
-            </div>
+      {/* Results Section */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">{headline}</h2>
+          {!isLoading && (
+            <span className="text-sm text-muted-foreground">
+              {countries.length.toLocaleString()} {countries.length === 1 ? 'country' : 'countries'}
+            </span>
           )}
-          {isLoading ? (
-            <CountryGridSkeleton />
-          ) : countries.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-              <p className="text-lg font-semibold">No countries found</p>
-              <p className="max-w-md text-sm">
-                Try adjusting your search or region filter. The REST Countries API occasionally rate limits queries—if that
-                happens, wait a few seconds and refresh.
+        </div>
+
+              {error ? (
+          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-destructive/40 bg-destructive/10 p-12 text-destructive">
+            <AlertTriangle className="h-10 w-10" />
+            <div className="text-center">
+              <p className="text-lg font-semibold">We couldn't load countries right now.</p>
+              <p className="text-sm text-destructive/80">
+                {error.message || "Please try again in a moment."}
               </p>
             </div>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {countries.map((country) => (
-                <CountryCard key={country.code} country={country} />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </section>
+          </div>
+        ) : (
+          <>
+            {(isLoading || isFetching) && (
+              <div className="flex items-center justify-center gap-3 py-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Loading destinations…
+              </div>
+            )}
+            {isLoading ? (
+              <CountryGridSkeleton />
+            ) : countries.length === 0 ? (
+              <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed bg-muted/20 p-16 text-center">
+                <p className="text-xl font-semibold text-foreground">No countries found</p>
+                <p className="max-w-md text-muted-foreground">
+                  Try adjusting your search or region filter to discover more destinations.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {countries.map((country) => (
+                  <CountryCard key={country.code} country={country} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+    </div>
   );
 }
 

@@ -35,24 +35,30 @@ export default function RootLayout({
       >
         <QueryProvider>
           <div className="flex min-h-screen flex-col">
-            <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-              <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-6 py-4">
-                <Link href="/" className="font-semibold tracking-tight text-lg">
-                  Country Guide
-                </Link>
+            <header className="sticky top-0 z-40 border-b bg-card shadow-sm">
+              <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-8 px-6 py-4">
+                <div className="flex items-center gap-2">
+                  <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  </svg>
+                  <Link href="/" className="text-xl font-bold tracking-tight text-foreground">
+                    GlobeTrekker
+                  </Link>
+                </div>
                 <MainNav />
               </div>
             </header>
-            <main className="flex-1">
-              <div className="mx-auto w-full max-w-6xl px-6 py-10">
+            <main className="flex-1 bg-background">
+              <div className="mx-auto w-full max-w-7xl px-6 py-12">
                 {children}
               </div>
             </main>
-            <footer className="border-t bg-muted/40">
-              <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-6 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-                <p>Built with Next.js, React Query, Zustand, and shadcn/ui.</p>
-                <p className="font-mono text-xs">
-                  {new Date().getFullYear()} · REST Countries · OpenWeather · ExchangeRate
+            <footer className="border-t bg-card">
+              <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+                <p className="text-foreground font-medium">© {new Date().getFullYear()} GlobeTrekker. All rights reserved.</p>
+                <p className="text-xs">
+                  Powered by REST Countries · OpenWeather · ExchangeRate API
                 </p>
               </div>
             </footer>

@@ -37,37 +37,50 @@ export function CountryFilters({ search, region, onSearchChange, onRegionChange 
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="relative flex items-center">
-        <Search className="absolute left-3 h-4 w-4 text-muted-foreground" aria-hidden />
+    <div className="flex flex-col gap-4 md:flex-row md:items-center">
+      <div className="relative flex flex-1 items-center">
+        <Search className="absolute left-4 h-5 w-5 text-muted-foreground" aria-hidden />
         <Input
           value={localSearch}
           onChange={(event) => handleSearchChange(event.target.value)}
-          placeholder="Search countries by name"
-          className="pl-9 pr-20"
+          placeholder="Where to?"
+          className="h-12 rounded-full border-border bg-card pl-12 pr-24 text-base shadow-sm focus-visible:ring-primary"
         />
         {localSearch && (
           <Button
             type="button"
             size="icon"
             variant="ghost"
-            className="absolute right-1 h-8 w-8 text-muted-foreground"
+            className="absolute right-16 h-8 w-8 text-muted-foreground hover:text-foreground"
             onClick={handleClearSearch}
           >
             <X className="h-4 w-4" aria-hidden />
             <span className="sr-only">Clear search</span>
           </Button>
         )}
+        <Button
+          type="button"
+          className="absolute right-1 h-10 rounded-full bg-primary px-6 text-white hover:bg-primary/90"
+          onClick={() => {}}
+        >
+          Search
+        </Button>
       </div>
-      <Tabs value={region} onValueChange={(value) => onRegionChange(value as RegionFilter)}>
-        <TabsList className="flex flex-wrap justify-start gap-2 bg-muted/60 p-1">
-          {REGIONS.map((option) => (
-            <TabsTrigger key={option} value={option} className="capitalize">
-              {option === "all" ? "All" : option}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      {region !== "all" && (
+        <Tabs value={region} onValueChange={(value) => onRegionChange(value as RegionFilter)}>
+          <TabsList className="flex flex-wrap justify-start gap-1 bg-transparent">
+            {REGIONS.filter(r => r !== "all").map((option) => (
+              <TabsTrigger 
+                key={option} 
+                value={option} 
+                className="capitalize rounded-full px-4 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {option}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      )}
     </div>
   );
 }

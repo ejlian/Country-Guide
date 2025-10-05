@@ -1,14 +1,16 @@
-## Country Guide Web
+## GlobeTrekker
 
-Country Guide is a Next.js 14 App Router experience for discovering countries, drilling into weather and currency data, and curating a personalised list of favourites. It combines REST Countries, OpenWeather, and Open Exchange Rate APIs with a modern UI powered by Tailwind CSS and shadcn/ui.
+GlobeTrekker is a modern travel discovery platform built with Next.js 15 App Router. Explore countries worldwide, view live weather and currency data, and curate your personalized travel wishlist. Features a stunning, travel-focused design inspired by leading booking platforms, powered by REST Countries, OpenWeather, and Open Exchange Rate APIs.
 
 ## Features
 
-- 🌍 **Explore**: Filter countries by name or region with instant feedback powered by React Query.
-- 🏳️ **Detail pages**: Rich snapshots with flags, key facts, neighbour listings, live weather, and currency highlights.
-- 📌 **Saved collection**: Persist favourites locally using Zustand with storage middleware.
-- 👤 **Profile**: Centralised hub for upcoming sync features and provider references.
-- 🎨 **Design system**: Tailored shadcn/ui components, responsive layout, and dark-mode friendly palette.
+- 🌍 **Beautiful Hero**: Large, engaging hero section with "Find Your Next Adventure" messaging
+- 🏞️ **Image-First Cards**: Stunning country cards with flag backgrounds, gradient overlays, and hover animations
+- 🔍 **Prominent Search**: Rounded search bar with inline button, perfectly centered in the hero
+- 🏳️ **Detailed Pages**: Rich country profiles with weather, currency, demographics, and neighboring countries
+- 📌 **Save Favorites**: Persist your travel wishlist locally with one-click bookmarking
+- 🎨 **Modern Design**: Clean GlobeTrekker aesthetic with cyan-blue accents, generous white space, and polished UI
+- 📱 **Fully Responsive**: Optimized layouts from mobile to 4K displays
 
 ## Getting started
 
