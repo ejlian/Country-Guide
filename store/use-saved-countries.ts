@@ -51,7 +51,7 @@ export const useSavedCountries = create<SavedCountriesState>()(
     {
       name: "saved-countries",
       storage: createJSONStorage(() => localStorage),
-      partialize: ({ saved }) => ({ saved }),
+      skipHydration: true,
     },
   ),
 );
