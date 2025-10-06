@@ -74,18 +74,8 @@ export default function RootLayout({
                 </div>
               </header>
             <main className="flex-1 bg-background">
-              <div className="mx-auto w-full max-w-7xl px-6 py-12">
-                {children}
-              </div>
+              {children}
             </main>
-            <footer className="border-t bg-card">
-              <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-                <p className="text-foreground font-medium">© {new Date().getFullYear()} GlobeTrekker. All rights reserved.</p>
-                <p className="text-xs">
-                  Powered by REST Countries · OpenWeather · ExchangeRate API
-                </p>
-              </div>
-            </footer>
           </div>
         </QueryProvider>
       </ThemeProvider>

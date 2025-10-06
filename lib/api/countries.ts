@@ -1,26 +1,6 @@
 import { CountryDetail, CountrySummary, CurrencyInfo } from "@/types/country";
 
 const REST_COUNTRIES_BASE = "https://restcountries.com/v3.1";
-const COUNTRY_FIELDS = [
-  "name",
-  "cca2",
-  "cca3",
-  "capital",
-  "region",
-  "subregion",
-  "population",
-  "area",
-  "timezones",
-  "currencies",
-  "languages",
-  "flags",
-  "maps",
-  "borders",
-  "latlng",
-  "demonyms",
-  "car",
-  "independent",
-].join(",");
 
 type RestCountry = {
   name: {
@@ -48,23 +28,31 @@ type RestCountry = {
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    // Countries data updates infrequently, so we can revalidate every 24h by default.
-    next: { revalidate: 60 * 60 * 24 },
-  });
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Countries data updates infrequently, so we can revalidate every 24h by default.
+      next: { revalidate: 60 * 60 * 24 },
+    });
 
-  if (!response.ok) {
-    if (response.status === 404) {
-      return [] as T;
+    if (!response.ok) {
+      if (response.status === 404) {
+        return [] as T;
+      }
+
+      // Log the error for debugging
+      console.error(`API Error: ${response.status} for ${url}`);
+      throw new Error(`Request failed with status ${response.status}`);
     }
 
-    throw new Error(`Request failed with status ${response.status}`);
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error(`Network error fetching ${url}:`, error);
+    // Return empty array for network errors to prevent app crash
+    return [] as T;
   }
-
-  return (await response.json()) as T;
 }
 
 function toCurrencyInfo(currencies?: Record<string, { name: string; symbol?: string }>): CurrencyInfo[] {
@@ -118,37 +106,47 @@ export interface CountryQueryParams {
 }
 
 export async function getCountries({ search, region }: CountryQueryParams): Promise<CountrySummary[]> {
-  const trimmedSearch = search?.trim();
-  const normalizedRegion = region?.toLowerCase();
+  try {
+    const trimmedSearch = search?.trim();
+    const normalizedRegion = region?.toLowerCase();
 
-  const shouldFilterByRegion = normalizedRegion && normalizedRegion !== "all";
+    const shouldFilterByRegion = normalizedRegion && normalizedRegion !== "all";
 
-  let url: string;
+    let url: string;
 
-  if (trimmedSearch) {
-    const encoded = encodeURIComponent(trimmedSearch);
-    url = `${REST_COUNTRIES_BASE}/name/${encoded}?fields=${COUNTRY_FIELDS}`;
-  } else if (shouldFilterByRegion) {
-    url = `${REST_COUNTRIES_BASE}/region/${normalizedRegion}?fields=${COUNTRY_FIELDS}`;
-  } else {
-    url = `${REST_COUNTRIES_BASE}/all?fields=${COUNTRY_FIELDS}`;
+    if (trimmedSearch) {
+      const encoded = encodeURIComponent(trimmedSearch);
+      url = `${REST_COUNTRIES_BASE}/name/${encoded}`;
+    } else if (shouldFilterByRegion) {
+      url = `${REST_COUNTRIES_BASE}/region/${normalizedRegion}`;
+    } else {
+      url = `${REST_COUNTRIES_BASE}/all`;
+    }
+
+    const data = await fetchJson<RestCountry[]>(url);
+
+    if (!Array.isArray(data)) {
+      console.error("Invalid data format received from API");
+      return [];
+    }
+
+    const mapped = data.map(toCountrySummary);
+
+    if (trimmedSearch && shouldFilterByRegion) {
+      return mapped.filter((country) => country.region.toLowerCase() === normalizedRegion);
+    }
+
+    return mapped;
+  } catch (error) {
+    console.error("Error in getCountries:", error);
+    return [];
   }
-
-  const data = await fetchJson<RestCountry[]>(url);
-
-  const mapped = data.map(toCountrySummary);
-
-  if (trimmedSearch && shouldFilterByRegion) {
-    return mapped.filter((country) => country.region.toLowerCase() === normalizedRegion);
-  }
-
-  return mapped;
 }
 
 export async function getCountryByCode(code: string): Promise<CountryDetail | null> {
   if (!code) return null;
   const encoded = encodeURIComponent(code);
-  const url = `${REST_COUNTRIES_BASE}/alpha/${encoded}?fields=${COUNTRY_FIELDS}`;
+  const url = `${REST_COUNTRIES_BASE}/alpha/${encoded}`;
   const data = await fetchJson<RestCountry[]>(url);
   if (!Array.isArray(data) || data.length === 0) {
     return null;
@@ -163,7 +161,7 @@ export async function getNeighborSummaries(borders: string[]): Promise<CountrySu
     .filter(Boolean)
     .join(",");
   if (!codes) return [];
-  const url = `${REST_COUNTRIES_BASE}/alpha?codes=${codes}&fields=${COUNTRY_FIELDS}`;
+  const url = `${REST_COUNTRIES_BASE}/alpha?codes=${codes}`;
   const data = await fetchJson<RestCountry[]>(url);
   return data.map(toCountrySummary);
 }
