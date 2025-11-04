@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { BookmarkX, Trash2 } from "lucide-react";
 
 import { CountryCard } from "@/components/country/country-card";
@@ -9,15 +9,23 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
 export default function SavedPage() {
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    useSavedCountries.persist.rehydrate();
+    setIsHydrated(true);
+  }, []);
+
   const savedList = useSavedCountries((state) => state.toArray());
   const clear = useSavedCountries((state) => state.clear);
 
-  const savedCount = savedList.length;
+  const savedCount = isHydrated ? savedList.length : 0;
   const headline = useMemo(() => {
+    if (!isHydrated) return "Loading...";
     if (savedCount === 0) return "No saved countries yet";
     if (savedCount === 1) return "1 saved country";
     return `${savedCount} saved countries`;
-  }, [savedCount]);
+  }, [savedCount, isHydrated]);
 
   return (
     <section className="space-y-10">
@@ -48,7 +56,7 @@ export default function SavedPage() {
             size="sm"
             className="inline-flex items-center gap-2"
             onClick={clear}
-            disabled={savedCount === 0}
+            disabled={!isHydrated || savedCount === 0}
           >
             <Trash2 className="h-4 w-4" aria-hidden /> Clear all
           </Button>
@@ -57,7 +65,11 @@ export default function SavedPage() {
 
       <Separator />
 
-      {savedCount === 0 ? (
+      {!isHydrated ? (
+        <div className="flex items-center justify-center py-12">
+          <p className="text-muted-foreground">Loading saved countries...</p>
+        </div>
+      ) : savedCount === 0 ? (
         <EmptyState />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">

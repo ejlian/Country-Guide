@@ -1,1 +1,3 @@
-export * from "./query-provider";
+export { QueryProvider } from "./query-provider";
+export { ThemeProvider } from "./theme-provider";
+export * from "./theme-provider";

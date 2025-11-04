@@ -6,15 +6,18 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/", label: "Explore" },
+  { href: "/destinations", label: "Destinations" },
+  { href: "/map", label: "Map" },
+  { href: "/trips", label: "Trips" },
   { href: "/saved", label: "Saved" },
-  { href: "/profile", label: "Profile" },
+  { href: "/community", label: "Community" },
 ];
 
 export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-2 text-sm font-medium">
+    <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
       {NAV_ITEMS.map((item) => {
         const isActive = isPathActive(pathname, item.href);
 
@@ -23,10 +26,10 @@ export function MainNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "rounded-full px-4 py-2 transition-colors",
+              "rounded-md px-4 py-2 transition-colors",
               isActive
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "text-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {item.label}
